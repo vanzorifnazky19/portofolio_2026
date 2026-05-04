@@ -1,0 +1,1991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arvanzo Rifnazky — Creative Designer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:        #0C0A08;
+      --bg-card:   #141210;
+      --bg-lift:   #1C1916;
+      --gold:      #D4A83A;
+      --gold-lt:   #F0C962;
+      --gold-dim:  rgba(212,168,58,.12);
+      --white:     #F0EAE0;
+      --muted:     #5A5450;
+      --border:    rgba(212,168,58,.14);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; cursor: none; font-size: 16px; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'Playfair Display', Georgia, serif;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Grain overlay ── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='.042'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9000;
+      opacity: .55;
+    }
+
+    /* ── Custom cursor ── */
+    #cur {
+      position: fixed; width: 10px; height: 10px;
+      background: var(--gold); border-radius: 50%;
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%,-50%);
+      transition: transform .12s ease, background .2s;
+    }
+    #cur-ring {
+      position: fixed; width: 34px; height: 34px;
+      border: 1.5px solid rgba(212,168,58,.45); border-radius: 50%;
+      pointer-events: none; z-index: 9998;
+      transform: translate(-50%,-50%);
+      transition: transform .38s ease, border-color .2s;
+    }
+    body.hover-active #cur { transform: translate(-50%,-50%) scale(2.2); }
+    body.hover-active #cur-ring { transform: translate(-50%,-50%) scale(1.6); border-color: rgba(212,168,58,.9); }
+
+    /* ── Progress bar ── */
+    #progress {
+      position: fixed; top: 0; left: 0;
+      height: 2px; background: var(--gold);
+      z-index: 8000; width: 0; transition: width .08s linear;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 500; padding: 26px 56px;
+      display: flex; justify-content: space-between; align-items: center;
+      transition: background .4s, padding .4s;
+    }
+    nav.scrolled {
+      background: rgba(12,10,8,.88);
+      backdrop-filter: blur(14px);
+      padding: 18px 56px;
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.35rem; letter-spacing: .12em;
+      color: var(--white); text-decoration: none;
+    }
+    .nav-logo span { color: var(--gold); }
+    .nav-links { display: flex; gap: 44px; list-style: none; }
+    .nav-links a {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .7rem; letter-spacing: .18em;
+      text-transform: uppercase; color: var(--muted);
+      text-decoration: none; transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--white); }
+
+    /* ══════════════════════════════════════
+       HERO
+    ══════════════════════════════════════ */
+    #hero {
+      position: relative; height: 100vh; min-height: 700px;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 0 56px; overflow: hidden;
+    }
+
+    /* Radial ambient glow */
+    .hero-glow {
+      position: absolute; width: 700px; height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(212,168,58,.09) 0%, transparent 70%);
+      top: 50%; left: 30%; transform: translate(-50%,-50%);
+      pointer-events: none;
+    }
+
+    /* Left accent bar */
+    .hero-bar {
+      position: absolute; left: 0; top: 15%; bottom: 15%;
+      width: 3px;
+      background: linear-gradient(to bottom, transparent, var(--gold) 40%, transparent);
+    }
+
+    /* Top label */
+    .hero-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .72rem; letter-spacing: .28em;
+      text-transform: uppercase; color: var(--gold);
+      margin-bottom: 28px;
+      opacity: 0; animation: aUp .7s ease .3s forwards;
+    }
+
+    /* Stacked PORT / -FOLIO. */
+    .hero-type { line-height: .87; }
+    .hero-line1 {
+      display: block;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(88px, 14vw, 210px);
+      letter-spacing: -.01em;
+      opacity: 0; animation: aUp .85s ease .45s forwards;
+    }
+    .hero-line2 {
+      display: block;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(88px, 14vw, 210px);
+      letter-spacing: -.01em;
+      color: transparent;
+      -webkit-text-stroke: 1.5px rgba(240,234,224,.55);
+      opacity: 0; animation: aUp .85s ease .58s forwards;
+    }
+    .hero-line2 .accent { color: var(--gold); -webkit-text-stroke: 0; }
+
+    /* Name badge top-right */
+    .hero-badge {
+      position: absolute; right: 56px; top: 50%;
+      transform: translateY(-50%);
+      text-align: right;
+      opacity: 0; animation: aLeft .85s ease .75s forwards;
+    }
+    .badge-first {
+      display: block;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(26px, 4.2vw, 66px);
+      letter-spacing: .08em;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(240,234,224,.38);
+      line-height: 1;
+    }
+    .badge-last {
+      display: block;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(26px, 4.2vw, 66px);
+      letter-spacing: .08em; line-height: 1;
+    }
+    .badge-sub {
+      display: block; margin-top: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .68rem; letter-spacing: .18em;
+      text-transform: uppercase; color: var(--gold);
+    }
+
+    /* Scroll cue */
+    .scroll-cue {
+      position: absolute; bottom: 80px; right: 56px;
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+      opacity: 0; animation: aFade 1s ease 1.3s forwards;
+    }
+    .scroll-cue span {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .62rem; letter-spacing: .22em;
+      text-transform: uppercase; color: var(--muted);
+      writing-mode: vertical-rl;
+    }
+    .scroll-needle {
+      width: 1px; height: 56px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+      animation: needle 2.2s ease-in-out infinite;
+    }
+    @keyframes needle {
+      0%,100% { transform: scaleY(1); opacity: .35; }
+      50%      { transform: scaleY(.75); opacity: 1; }
+    }
+
+    /* Marquee strip */
+    .marquee-strip {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      overflow: hidden; padding: 16px 0;
+      border-top: 1px solid var(--border);
+      background: rgba(12,10,8,.72); backdrop-filter: blur(8px);
+    }
+    .marquee-track {
+      display: flex; white-space: nowrap;
+      animation: mq 22s linear infinite;
+    }
+    .marquee-track:hover { animation-play-state: paused; }
+    .mq-item {
+      display: inline-flex; align-items: center; gap: 36px;
+      padding-right: 36px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .68rem; letter-spacing: .22em;
+      text-transform: uppercase; color: var(--muted);
+      flex-shrink: 0;
+    }
+    .mq-dot { width: 4px; height: 4px; background: var(--gold); border-radius: 50%; }
+    @keyframes mq { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* ══════════════════════════════════════
+       SECTION SHARED
+    ══════════════════════════════════════ */
+    .s-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .7rem; letter-spacing: .28em;
+      text-transform: uppercase; color: var(--gold);
+      display: flex; align-items: center; gap: 16px;
+      margin-bottom: 22px;
+    }
+    .s-label::before { content: ''; display: block; width: 30px; height: 1px; background: var(--gold); }
+
+    .s-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.2rem, 3.8vw, 3.8rem);
+      font-weight: 800; line-height: 1.05;
+      margin-bottom: 0;
+    }
+    .s-title em {
+      font-style: italic;
+      font-family: 'Playfair Display', serif;
+      color: var(--gold);
+    }
+
+    /* Reveal animation */
+    .r {
+      opacity: 0; transform: translateY(36px);
+      transition: opacity .75s ease, transform .75s ease;
+    }
+    .r.on { opacity: 1; transform: none; }
+    .r.d1 { transition-delay: .1s; }
+    .r.d2 { transition-delay: .2s; }
+    .r.d3 { transition-delay: .3s; }
+    .r.d4 { transition-delay: .4s; }
+
+    /* ══════════════════════════════════════
+       ABOUT
+    ══════════════════════════════════════ */
+    #about {
+      padding: 150px 56px 140px;
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 96px; align-items: center;
+      max-width: 1380px; margin: 0 auto;
+    }
+
+    .about-body { margin-top: 32px; }
+    .about-p {
+      font-size: 1.05rem; line-height: 1.9;
+      color: rgba(240,234,224,.68);
+      margin-bottom: 22px;
+    }
+    .about-p strong { color: var(--white); font-weight: 700; }
+
+    .stats {
+      display: flex; gap: 52px; margin-top: 52px;
+      padding-top: 40px;
+      border-top: 1px solid var(--border);
+    }
+    .stat-n {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3.4rem; color: var(--gold); line-height: 1;
+    }
+    .stat-l {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .62rem; letter-spacing: .16em;
+      text-transform: uppercase; color: var(--muted); margin-top: 4px;
+    }
+
+    /* Photo frame */
+    .photo-wrap { position: relative; }
+    .photo-frame {
+      position: relative; border-radius: 3px;
+      overflow: hidden; aspect-ratio: 3/4;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+    }
+    .photo-frame img {
+      width: 100%; height: 100%; object-fit: cover;
+      display: block;
+    }
+    .photo-shimmer {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(212,168,58,.07) 0%, transparent 55%, rgba(212,168,58,.04) 100%);
+    }
+    /* Corner accents */
+    .photo-corner {
+      position: absolute; width: 40px; height: 40px;
+      border-color: var(--gold); border-style: solid; border-width: 0;
+    }
+    .photo-corner.tl { top: -1px; left: -1px; border-top-width: 2px; border-left-width: 2px; }
+    .photo-corner.br { bottom: -1px; right: -1px; border-bottom-width: 2px; border-right-width: 2px; }
+    .photo-tag {
+      position: absolute; top: 28px; left: -14px;
+      background: var(--gold); color: var(--bg);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .62rem; letter-spacing: .14em; text-transform: uppercase;
+      padding: 5px 10px; writing-mode: vertical-rl; transform: rotate(180deg);
+      font-weight: 500;
+    }
+    /* Placeholder when no photo */
+    .photo-placeholder {
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 14px;
+    }
+    .ph-ring {
+      width: 72px; height: 72px;
+      border: 1.5px solid rgba(212,168,58,.25);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .ph-ring span {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem; color: rgba(212,168,58,.4);
+    }
+    .ph-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .6rem; letter-spacing: .2em;
+      text-transform: uppercase; color: var(--muted);
+    }
+
+    /* ══════════════════════════════════════
+       EXPERIENCE
+    ══════════════════════════════════════ */
+    #experience {
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 130px 56px;
+    }
+    .exp-inner {
+      max-width: 1380px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 100px;
+    }
+    .exp-col-head { margin-bottom: 56px; }
+
+    /* Timeline */
+    .timeline { position: relative; padding-left: 30px; }
+    .timeline::before {
+      content: ''; position: absolute;
+      left: 0; top: 8px; bottom: 40px;
+      width: 1px;
+      background: linear-gradient(to bottom, var(--gold) 0%, rgba(212,168,58,.12) 100%);
+    }
+    .tl-item {
+      position: relative; margin-bottom: 48px;
+      opacity: 0; transform: translateX(-18px);
+      transition: opacity .65s ease, transform .65s ease;
+    }
+    .tl-item.on { opacity: 1; transform: none; }
+    .tl-diamond {
+      position: absolute; left: -36px; top: 5px;
+      width: 13px; height: 13px;
+      border: 2px solid var(--gold); background: var(--bg-card);
+      transform: rotate(45deg);
+    }
+    .tl-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .66rem; letter-spacing: .18em;
+      color: var(--gold); margin-bottom: 7px;
+    }
+    .tl-co {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.2rem; font-weight: 700;
+      color: var(--white); margin-bottom: 5px;
+    }
+    .tl-desc {
+      font-size: .88rem; line-height: 1.65;
+      color: rgba(240,234,224,.46);
+      font-style: italic;
+    }
+    .gpa-badge {
+      display: inline-flex; align-items: center; gap: 10px;
+      margin-top: 10px; padding: 7px 12px;
+      border: 1px solid rgba(212,168,58,.28);
+      border-radius: 3px; background: var(--bg-card);
+    }
+    .gpa-badge .gpa-degree {
+      font-family: 'Playfair Display', serif;
+      font-style: italic; font-size: .82rem;
+      color: rgba(240,234,224,.46);
+    }
+    .gpa-badge .gpa-dot {
+      width: 4px; height: 4px; border-radius: 50%;
+      background: var(--gold); flex-shrink: 0;
+    }
+    .gpa-badge .gpa-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .75rem; letter-spacing: .06em;
+      color: var(--gold);
+    }
+
+    /* ══════════════════════════════════════
+       SKILLS
+    ══════════════════════════════════════ */
+    #skills {
+      padding: 130px 56px;
+      background: var(--bg);
+    }
+    .skills-head { margin-bottom: 64px; }
+    .skills-head .s-title .gold { color: var(--gold); font-style: normal; font-family: inherit; }
+    .skills-row {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 14px;
+    }
+    .skill-tile {
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      aspect-ratio: 190 / 140;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 10px;
+      background: var(--bg-card);
+      cursor: default;
+      transition: border-color .3s, transform .3s, background .3s;
+    }
+    .skill-tile:hover {
+      border-color: var(--gold);
+      transform: translateY(-8px);
+      background: rgba(212,168,58,.05);
+    }
+    .sk-icon {
+      display: block; line-height: 1;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.75rem;
+    }
+    .sk-icon.syne {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800; font-size: 1.25rem;
+    }
+    .sk-icon.syne-sm {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800; font-size: 1.1rem;
+    }
+    .sk-icon.mono {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.6rem;
+    }
+    .sk-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .58rem; letter-spacing: .14em;
+      text-transform: uppercase; color: var(--muted);
+    }
+
+    /* ══════════════════════════════════════
+       PROJECTS
+    ══════════════════════════════════════ */
+    #projects {
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+      padding-bottom: 56px;
+    }
+    .proj-head { padding: 130px 56px 64px; }
+
+    .proj-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      padding: 0 56px;
+    }
+
+    /* ── Card base ── */
+    .proj-card {
+      position: relative; overflow: hidden;
+      background: var(--bg-card);
+      border: 1px solid rgba(212,168,58,.08);
+      cursor: pointer;
+      transform-style: preserve-3d;
+      transition: border-color .35s, box-shadow .35s;
+      will-change: transform;
+    }
+    .proj-card.wide { grid-column: 1 / -1; }
+    .proj-card:hover {
+      border-color: rgba(212,168,58,.22);
+      box-shadow: 0 24px 64px rgba(0,0,0,.45), inset 0 1px 0 rgba(212,168,58,.15);
+    }
+
+    /* ── Clickable project cards ── */
+    .proj-card[data-project] { cursor: pointer; }
+
+    /* ── Scroll reveal ── */
+    .proj-card {
+      opacity: 0; transform: translateY(52px);
+      transition: opacity .7s cubic-bezier(.25,.46,.45,.94),
+                  transform .7s cubic-bezier(.25,.46,.45,.94),
+                  border-color .35s, box-shadow .35s;
+    }
+    .proj-card.on { opacity: 1; transform: translateY(0); }
+
+    /* stagger per grid position */
+    .proj-card:nth-child(1) { transition-delay: 0ms; }
+    .proj-card:nth-child(2) { transition-delay: 90ms; }
+    .proj-card:nth-child(3) { transition-delay: 180ms; }
+    .proj-card:nth-child(4) { transition-delay: 100ms; }
+    .proj-card:nth-child(5) { transition-delay: 190ms; }
+    .proj-card:nth-child(6) { transition-delay: 280ms; }
+    .proj-card:nth-child(7) { transition-delay: 200ms; }
+
+    /* ── Visual area — Figma ratio 432:320 ── */
+    .proj-vis {
+      aspect-ratio: 432 / 320;
+      position: relative; overflow: hidden;
+    }
+    .proj-card.wide .proj-vis {
+      aspect-ratio: unset; height: 170px;
+    }
+
+    /* ── Background gradient + scale on hover ── */
+    .proj-bg {
+      width: 100%; height: 100%;
+      transition: transform .7s cubic-bezier(.25,.46,.45,.94);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 28px;
+      position: relative;
+    }
+    .proj-card:hover .proj-bg { transform: scale(1.04); }
+
+    /* ── Noise texture overlay on vis ── */
+    .proj-vis::after {
+      content: '';
+      position: absolute; inset: 0; pointer-events: none; z-index: 2;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.045'/%3E%3C/svg%3E");
+      mix-blend-mode: overlay; opacity: .6;
+    }
+
+    /* ── Ghost project number ── */
+    .proj-ghost-num {
+      position: absolute; right: -4px; bottom: -16px;
+      font-family: 'Bebas Neue', sans-serif; font-size: 9rem; line-height: 1;
+      color: rgba(255,255,255,.04);
+      pointer-events: none; user-select: none; z-index: 1;
+      transition: color .5s, transform .5s cubic-bezier(.25,.46,.45,.94);
+    }
+    .proj-card:hover .proj-ghost-num {
+      color: rgba(212,168,58,.07);
+      transform: scale(1.08) translateY(-6px);
+    }
+
+    /* ── Card category label ── */
+    .proj-cat {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .58rem; letter-spacing: .24em; text-transform: uppercase;
+      color: rgba(240,234,224,.5); margin-bottom: 12px;
+      position: relative; z-index: 3;
+    }
+
+    /* ── Card project title (large) ── */
+    .proj-vis-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.2rem, 4vw, 2.8rem); line-height: 1;
+      letter-spacing: .04em; color: #fff;
+      position: relative; z-index: 3;
+    }
+
+    /* ── Accent line ── */
+    .proj-accent {
+      width: 48px; height: 2px;
+      margin: 14px auto 0; position: relative; z-index: 3;
+      transition: width .45s cubic-bezier(.25,.46,.45,.94);
+    }
+    .proj-card:hover .proj-accent { width: 96px; }
+
+    /* ── Veil overlay ── */
+    .proj-veil {
+      position: absolute; inset: 0; z-index: 2;
+      background: linear-gradient(to top,
+        rgba(12,10,8,.9) 0%, rgba(12,10,8,.3) 55%, transparent 100%
+      );
+      opacity: 0; transition: opacity .4s ease;
+    }
+    .proj-card:hover .proj-veil { opacity: 1; }
+
+    /* ── "View" CTA that slides up on hover ── */
+    .proj-cta {
+      position: absolute; bottom: 0; left: 0; right: 0; z-index: 4;
+      padding: 16px 28px;
+      display: flex; align-items: center; justify-content: space-between;
+      transform: translateY(10px); opacity: 0;
+      transition: transform .42s cubic-bezier(.25,.46,.45,.94), opacity .38s ease;
+    }
+    .proj-card:hover .proj-cta { transform: translateY(0); opacity: 1; }
+    .proj-cta-lbl {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: .72rem; letter-spacing: .14em; text-transform: uppercase;
+      color: rgba(240,234,224,.9);
+    }
+    .proj-cta-arr { color: var(--gold); font-size: 1.1rem; }
+
+    /* ── Screen mockup elements ── */
+    .proj-screen {
+      position: absolute; z-index: 3;
+      border-radius: 6px; overflow: hidden;
+      box-shadow: 0 12px 40px rgba(0,0,0,.55);
+      transition: transform .6s cubic-bezier(.25,.46,.45,.94);
+    }
+    .proj-card:hover .proj-screen { transform: translateY(-6px) scale(1.02); }
+
+    /* ── Meta — Figma height 140px ── */
+    .proj-meta {
+      min-height: 140px;
+      padding: 28px 28px 24px;
+      border-top: 1px solid rgba(212,168,58,.1);
+      display: flex; flex-direction: column; justify-content: space-between;
+      position: relative;
+    }
+    .proj-meta-top { display: flex; flex-direction: column; gap: 6px; }
+    .proj-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .6rem; letter-spacing: .22em; color: var(--gold);
+    }
+    .proj-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.12rem; font-weight: 700; line-height: 1.2;
+      color: var(--white);
+      transition: color .25s;
+    }
+    .proj-card:hover .proj-name { color: var(--gold-lt); }
+    .proj-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+    .ptag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .56rem; letter-spacing: .1em; text-transform: uppercase;
+      padding: 3px 8px;
+      border: 1px solid var(--border); border-radius: 2px;
+      color: var(--muted);
+      transition: border-color .25s, color .25s;
+    }
+    .proj-card:hover .ptag { border-color: rgba(212,168,58,.22); color: rgba(240,234,224,.6); }
+
+    /* Wide card meta overrides */
+    .proj-card.wide .proj-meta {
+      min-height: 90px; padding: 20px 28px;
+      flex-direction: row; align-items: center;
+    }
+    .proj-card.wide .proj-tags { margin-top: 0; }
+
+    /* ── Merchandise wide card specifics ── */
+    .merch-items {
+      position: absolute; right: 28px; top: 50%; transform: translateY(-50%);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .6rem; letter-spacing: .14em; text-transform: uppercase;
+      color: rgba(212,168,58,.5); line-height: 2.2;
+      text-align: right; z-index: 3;
+    }
+
+    /* ══════════════════════════════════════
+       PROJECT DETAIL OVERLAY
+    ══════════════════════════════════════ */
+    #pw-detail, #xl-detail, #kemen-detail, #mandiri-detail, #mbox-detail, #intersport-detail {
+      position: fixed; inset: 0; z-index: 4000;
+      background: var(--bg);
+      overflow-y: auto;
+      transform: translateX(100%);
+      transition: transform .55s cubic-bezier(.77,0,.175,1);
+      will-change: transform;
+    }
+    #pw-detail.open, #xl-detail.open, #kemen-detail.open,
+    #mandiri-detail.open, #mbox-detail.open, #intersport-detail.open {
+      transform: translateX(0);
+    }
+
+    /* ── XL Business: 3-col image grid ── */
+    .xl-img-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 64px;
+    }
+    .xl-img-grid img {
+      width: 100%; height: auto; display: block;
+    }
+
+    /* ── Mandiri: phone screens row ── */
+    .mandiri-phones {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .mandiri-phones .phone-wrap {
+      overflow: hidden; background: var(--bg-card);
+    }
+    .mandiri-phones .phone-wrap img {
+      width: 100%; height: auto; display: block;
+    }
+    .mandiri-composite {
+      overflow: hidden; margin-bottom: 64px;
+    }
+    .mandiri-composite img {
+      width: 100%; display: block;
+    }
+
+    /* ── Intersport: square grid + wide phone ── */
+    .ia-sq-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .ia-sq-grid img {
+      width: 100%; height: auto;
+      display: block;
+    }
+    .ia-phone-wrap {
+      overflow: hidden; margin-bottom: 64px;
+    }
+    .ia-phone-wrap img {
+      width: 100%; display: block;
+    }
+
+    .pw-nav {
+      position: sticky; top: 0; z-index: 10;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 56px; height: 72px;
+      background: rgba(12,10,8,.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .pw-back {
+      display: flex; align-items: center; gap: 10px;
+      background: none; border: none; cursor: pointer;
+      font-family: 'Syne', sans-serif; font-weight: 600;
+      font-size: .72rem; letter-spacing: .16em; text-transform: uppercase;
+      color: var(--muted); transition: color .2s;
+    }
+    .pw-back:hover { color: var(--gold); }
+    .pw-back-arrow { font-size: 1rem; color: var(--gold); transition: transform .2s; }
+    .pw-back:hover .pw-back-arrow { transform: translateX(-4px); }
+    .pw-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem; color: var(--gold); letter-spacing: .08em;
+    }
+
+    .pw-body { padding: 80px 56px 120px; max-width: 1440px; margin: 0 auto; }
+
+    .pw-eyebrow {
+      display: flex; align-items: center; gap: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .66rem; letter-spacing: .22em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 28px;
+    }
+    .pw-eyebrow::before {
+      content: ''; display: block;
+      width: 30px; height: 1px; background: var(--gold);
+    }
+
+    .pw-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3.5rem, 7vw, 8rem);
+      letter-spacing: .03em; line-height: 1;
+      color: var(--white); margin-bottom: 64px;
+    }
+
+    /* 3-column staggered image grid */
+    /* 3×2 flat grid — no stagger, matches Figma exactly */
+    .pw-img-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .pw-img-wrap {
+      width: 100%; overflow: hidden; background: var(--bg-card);
+    }
+    .pw-img-wrap img {
+      width: 100%; height: auto; display: block;
+    }
+    /* Banner + phone side-by-side layout */
+    .pw-banner-phone {
+      display: grid;
+      grid-template-columns: 1fr 355px;
+      gap: 48px;
+      margin-bottom: 64px;
+      align-items: start;
+    }
+    .pw-banners { display: flex; flex-direction: column; gap: 16px; }
+    .pw-banner { overflow: hidden; background: var(--bg-card); }
+    .pw-banner img {
+      width: 100%; display: block;
+      aspect-ratio: 886 / 296;
+      object-fit: cover;
+    }
+    .pw-img-placeholder {
+      aspect-ratio: 1/1;
+      background: var(--bg-lift);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .pw-img-placeholder span {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .58rem; letter-spacing: .18em;
+      color: var(--muted); text-transform: uppercase;
+    }
+
+    /* Kemenparekraf image grid */
+    .km-img-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 64px;
+    }
+    .km-img-wrap { overflow: hidden; background: var(--bg-card); }
+    .km-img-wrap img { width: 100%; height: auto; display: block; }
+
+    /* Full-width banner images */
+    .pw-banner {
+      overflow: hidden; background: var(--bg-card);
+      margin-bottom: 16px;
+    }
+    .pw-banner-placeholder {
+      width: 100%; aspect-ratio: 16/5;
+      background: var(--bg-lift);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .pw-banner-placeholder span {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .58rem; letter-spacing: .18em;
+      color: var(--muted); text-transform: uppercase;
+    }
+
+    /* Phone + bio row */
+    .pw-phone-row {
+      display: grid; grid-template-columns: 340px 1fr;
+      gap: 80px; align-items: start; margin-top: 64px;
+    }
+    .pw-phone-wrap {
+      aspect-ratio: 340/650;
+      background: var(--bg-card);
+      border-radius: 24px; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .pw-phone-placeholder {
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 12px;
+    }
+    .pw-phone-placeholder::before {
+      content: ''; display: block;
+      width: 48px; height: 4px; background: var(--gold-dim);
+      border-radius: 2px;
+    }
+
+    .pw-bio {
+      padding-top: 24px;
+    }
+    .pw-bio-text {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1rem, 1.4vw, 1.35rem);
+      line-height: 1.85; color: rgba(240,234,224,.78);
+      margin-bottom: 40px;
+    }
+
+    .pw-divider {
+      width: 100%; height: 1px; background: var(--border);
+      margin: 64px 0 48px;
+    }
+
+    .pw-process-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .66rem; letter-spacing: .22em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 28px;
+    }
+    .pw-process-list {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+    }
+    .pw-process-item h4 {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 1rem; margin-bottom: 10px; color: var(--white);
+    }
+    .pw-process-item p {
+      font-family: 'Playfair Display', serif; font-size: .88rem;
+      line-height: 1.75; color: var(--muted);
+    }
+
+    /* ══════════════════════════════════════
+       CONTACT
+    ══════════════════════════════════════ */
+    #contact {
+      position: relative; overflow: hidden;
+      padding: 80px 56px 100px;
+      text-align: center;
+    }
+    .contact-ghost {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 18vw; white-space: nowrap;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(240,234,224,.04);
+      pointer-events: none; user-select: none;
+      letter-spacing: -.01em;
+    }
+    .contact-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .72rem; letter-spacing: .28em;
+      text-transform: uppercase; color: var(--gold);
+      margin-bottom: 26px;
+    }
+    .contact-heading {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3.5rem, 11.1vw, 10rem);
+      line-height: .9; margin-bottom: 18px;
+      color: var(--white);
+    }
+    .contact-heading .outline {
+      display: block;
+      color: transparent;
+      -webkit-text-stroke: 2px rgba(240,234,224,0.55);
+    }
+    .clinks {
+      display: flex; justify-content: center;
+      gap: 72px; flex-wrap: wrap;
+    }
+    .clink {
+      text-decoration: none;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 4px;
+    }
+    .clink-lbl {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .6rem; letter-spacing: .22em;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .clink-val {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.05rem; font-weight: 600;
+      color: var(--white); transition: color .22s;
+    }
+    .clink:hover .clink-val { color: var(--gold); }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 56px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .ft-copy, .ft-note {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .62rem; letter-spacing: .14em; color: var(--muted);
+    }
+
+    /* ══════════════════════════════════════
+       KEYFRAMES
+    ══════════════════════════════════════ */
+    @keyframes aUp   { from { opacity:0; transform:translateY(28px) } to { opacity:1; transform:none } }
+    @keyframes aLeft { from { opacity:0; transform:translate(28px,-50%) } to { opacity:1; transform:translate(0,-50%) } }
+    @keyframes aFade { from { opacity:0 } to { opacity:1 } }
+  </style>
+</head>
+<body>
+
+<!-- Cursor -->
+<div id="cur"></div>
+<div id="cur-ring"></div>
+
+<!-- Scroll Progress -->
+<div id="progress"></div>
+
+<!-- ══════ NAV ══════ -->
+<nav id="nav">
+  <a href="#hero" class="nav-logo">AR<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ══════ HERO ══════ -->
+<section id="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-bar"></div>
+
+  <div class="hero-eyebrow">Creative Designer &nbsp;·&nbsp; Jakarta, Indonesia</div>
+
+  <div class="hero-type">
+    <span class="hero-line1">PORT</span>
+    <span class="hero-line2">-FOLIO<span class="accent">.</span></span>
+  </div>
+
+  <div class="hero-badge">
+    <span class="badge-first">ARVANZO</span>
+    <span class="badge-last">RIFNAZKY</span>
+    <span class="badge-sub">· Creative Design ·</span>
+  </div>
+
+  <div class="scroll-cue">
+    <div class="scroll-needle"></div>
+    <span>Scroll</span>
+  </div>
+
+  <div class="marquee-strip">
+    <div class="marquee-track" aria-hidden="true">
+      <!-- repeated twice for seamless loop -->
+      <span class="mq-item">Branding <span class="mq-dot"></span></span>
+      <span class="mq-item">UI / UX Design <span class="mq-dot"></span></span>
+      <span class="mq-item">Print Media <span class="mq-dot"></span></span>
+      <span class="mq-item">Social Media <span class="mq-dot"></span></span>
+      <span class="mq-item">Layouting <span class="mq-dot"></span></span>
+      <span class="mq-item">Key Visual <span class="mq-dot"></span></span>
+      <span class="mq-item">Illustration <span class="mq-dot"></span></span>
+      <span class="mq-item">Motion Graphics <span class="mq-dot"></span></span>
+      <span class="mq-item">Branding <span class="mq-dot"></span></span>
+      <span class="mq-item">UI / UX Design <span class="mq-dot"></span></span>
+      <span class="mq-item">Print Media <span class="mq-dot"></span></span>
+      <span class="mq-item">Social Media <span class="mq-dot"></span></span>
+      <span class="mq-item">Layouting <span class="mq-dot"></span></span>
+      <span class="mq-item">Key Visual <span class="mq-dot"></span></span>
+      <span class="mq-item">Illustration <span class="mq-dot"></span></span>
+      <span class="mq-item">Motion Graphics <span class="mq-dot"></span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ ABOUT ══════ -->
+<section id="about">
+  <div class="r">
+    <div class="s-label">About Me</div>
+    <h2 class="s-title">Crafting <em>Visual</em><br>Experiences</h2>
+    <div class="about-body">
+      <p class="about-p">
+        Hi there! I'm <strong>Arvanzo Rifnazky.</strong> The first <strong>3 years</strong> of my career were dedicated to graphic design, honing my skills in creating strong visual identities and compelling marketing materials. Skilled in Adobe tools across a wide range of projects — from branding and illustration to layouts for print and digital media.
+      </p>
+      <p class="about-p">
+        For the next <strong>3 years</strong>, I focused on <strong>UI/UX design.</strong> I believe that design must be intuitive and user-centered. Skilled at conducting user research, creating wireframes, and designing interfaces that are not only beautiful but also functional and easy to use.
+      </p>
+      <div class="stats">
+        <div>
+          <div class="stat-n">6+</div>
+          <div class="stat-l">Years Experience</div>
+        </div>
+        <div>
+          <div class="stat-n">7+</div>
+          <div class="stat-l">Projects</div>
+        </div>
+        <div>
+          <div class="stat-n">4</div>
+          <div class="stat-l">Companies</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="photo-wrap r d2">
+    <span class="photo-tag">AR · Designer</span>
+    <div class="photo-frame">
+      <!-- If profile photo exists locally, replace the placeholder below with:
+           <img src="path/to/photo.jpg" alt="Arvanzo Rifnazky"> -->
+      <div class="photo-placeholder">
+        <div class="ph-ring"><span>AR</span></div>
+        <span class="ph-label">Profile Photo</span>
+      </div>
+      <div class="photo-shimmer"></div>
+      <div class="photo-corner tl"></div>
+      <div class="photo-corner br"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ EXPERIENCE ══════ -->
+<section id="experience">
+  <div class="exp-inner">
+
+    <!-- Work -->
+    <div>
+      <div class="exp-col-head r">
+        <div class="s-label">Work History</div>
+        <h2 class="s-title">Experience</h2>
+      </div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-diamond"></div>
+          <div class="tl-date">2022 — Present</div>
+          <div class="tl-co">Bank Mandiri</div>
+          <div class="tl-desc">Internal &amp; Customer Facing Application UI</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-diamond"></div>
+          <div class="tl-date">2021 — 2022</div>
+          <div class="tl-co">Dentsu Indonesia</div>
+          <div class="tl-desc">XL Business Solution (Dedicated), Bank Mandiri (Print), Teh Kotak (Story Board), Axis AoN (Web Banner)</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-diamond"></div>
+          <div class="tl-date">2019 — 2021</div>
+          <div class="tl-co">Zettastorm Agency – Sehati TeleCTG</div>
+          <div class="tl-desc">Internal Product &amp; Pitching Brand</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-diamond"></div>
+          <div class="tl-date">2018 — Present</div>
+          <div class="tl-co">Freelance</div>
+          <div class="tl-desc">Pro Warrior, Konilife, Kementrian Pariwisata, Intersport Auto, Fishing Product, Lawfirm Web, Company Profile</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Education + Skills -->
+    <div>
+      <div class="exp-col-head r">
+        <div class="s-label">Academic Background</div>
+        <h2 class="s-title">Education</h2>
+      </div>
+      <div class="timeline" style="margin-bottom: 72px;">
+        <div class="tl-item">
+          <div class="tl-diamond"></div>
+          <div class="tl-date">2014 — 2018</div>
+          <div class="tl-co">Universitas Al Azhar Indonesia</div>
+          <div class="gpa-badge">
+            <span class="gpa-degree">Bachelor's Degree</span>
+            <span class="gpa-dot"></span>
+            <span class="gpa-val">GPA 3.05 / 4.00</span>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-diamond"></div>
+          <div class="tl-date">2014</div>
+          <div class="tl-co">SMAN 47 Jakarta</div>
+          <div class="tl-desc">Senior High School</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════ SKILLS ══════ -->
+<section id="skills">
+  <div class="skills-head r">
+    <div class="s-label">Toolset</div>
+    <h2 class="s-title">Skills &amp; <span class="gold">Tools</span></h2>
+  </div>
+  <div class="skills-row">
+    <div class="skill-tile r">
+      <span class="sk-icon mono" style="color:#D4A83A;">&lt;/&gt;</span>
+      <span class="sk-name">HTML</span>
+    </div>
+    <div class="skill-tile r d1">
+      <span class="sk-icon syne" style="color:#A259FF;">Fig</span>
+      <span class="sk-name">Figma</span>
+    </div>
+    <div class="skill-tile r d2">
+      <span class="sk-icon syne-sm" style="color:#E07E39;">CldAI</span>
+      <span class="sk-name">Claude AI</span>
+    </div>
+    <div class="skill-tile r d3">
+      <span class="sk-icon syne" style="color:#1E90FF;">Aff</span>
+      <span class="sk-name">Affinity</span>
+    </div>
+    <div class="skill-tile r d4">
+      <span class="sk-icon" style="color:#31A8FF;">Ps</span>
+      <span class="sk-name">Photoshop</span>
+    </div>
+    <div class="skill-tile r d1">
+      <span class="sk-icon" style="color:#FF9A00;">Ai</span>
+      <span class="sk-name">Illustrator</span>
+    </div>
+    <div class="skill-tile r d2">
+      <span class="sk-icon" style="color:#9999FF;">Ae</span>
+      <span class="sk-name">After Effects</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ PROJECTS ══════ -->
+<section id="projects">
+  <div class="proj-head r">
+    <div class="s-label">Selected Work</div>
+    <h2 class="s-title">Projects</h2>
+  </div>
+
+  <div class="proj-grid">
+
+    <!-- 01 Pro Warriors — actual design images as bg -->
+    <div class="proj-card" data-project="pro-warriors">
+      <div class="proj-vis">
+        <div class="proj-bg" style="background:linear-gradient(155deg,#0e0000,#3a0000,#5c0808);position:relative;">
+          <!-- Actual design work image as bg -->
+          <img src="img/pw/pw-01-andhara.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.35;mix-blend-mode:luminosity;">
+          <div class="proj-cat">Social Media · TV Show</div>
+          <div class="proj-vis-title">PRO<br>WARRIORS</div>
+          <div class="proj-accent" style="background:#e63030;"></div>
+        </div>
+        <div class="proj-ghost-num">01</div>
+        <div class="proj-veil"></div>
+        <div class="proj-cta">
+          <span class="proj-cta-lbl">View Project</span>
+          <span class="proj-cta-arr">→</span>
+        </div>
+      </div>
+      <div class="proj-meta">
+        <div class="proj-meta-top">
+          <div class="proj-num">01</div>
+          <div class="proj-name">Pro Warriors</div>
+        </div>
+        <div class="proj-tags">
+          <span class="ptag">Social Media</span>
+          <span class="ptag">Branding</span>
+          <span class="ptag">TV Show</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 02 XL Business Solution -->
+    <div class="proj-card" data-project="xl-business">
+      <div class="proj-vis">
+        <div class="proj-bg" style="background:linear-gradient(155deg,#001028,#002060,#003a94);">
+          <!-- CSS key-visual screen mockup -->
+          <div style="position:absolute;inset:0;overflow:hidden;opacity:.18;">
+            <div style="position:absolute;top:20%;left:-10%;right:-10%;height:1px;background:rgba(0,180,255,.8);"></div>
+            <div style="position:absolute;top:40%;left:-10%;right:-10%;height:1px;background:rgba(0,180,255,.5);"></div>
+            <div style="position:absolute;top:60%;left:-10%;right:-10%;height:1px;background:rgba(0,180,255,.3);"></div>
+            <div style="position:absolute;left:30%;top:0;bottom:0;width:1px;background:rgba(0,180,255,.4);"></div>
+            <div style="position:absolute;left:65%;top:0;bottom:0;width:1px;background:rgba(0,180,255,.25);"></div>
+          </div>
+          <div class="proj-cat">XL Axiata · Dentsu Indonesia</div>
+          <div class="proj-vis-title">XL BUSINESS<br>SOLUTION</div>
+          <div class="proj-accent" style="background:#00b4ff;"></div>
+        </div>
+        <div class="proj-ghost-num">02</div>
+        <div class="proj-veil"></div>
+        <div class="proj-cta">
+          <span class="proj-cta-lbl">View Project</span>
+          <span class="proj-cta-arr">→</span>
+        </div>
+      </div>
+      <div class="proj-meta">
+        <div class="proj-meta-top">
+          <div class="proj-num">02</div>
+          <div class="proj-name">XL Business Solution</div>
+        </div>
+        <div class="proj-tags">
+          <span class="ptag">Key Visual</span>
+          <span class="ptag">Print Media</span>
+          <span class="ptag">Web Banner</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 03 Kemenparekraf -->
+    <div class="proj-card" data-project="kemenparekraf">
+      <div class="proj-vis">
+        <div class="proj-bg" style="background:linear-gradient(155deg,#08122a,#162858,#6e1018);">
+          <!-- Diagonal stripe decoration -->
+          <div style="position:absolute;inset:0;overflow:hidden;opacity:.12;">
+            <div style="position:absolute;top:0;left:20%;width:1px;height:140%;background:rgba(255,200,80,.8);transform:rotate(15deg);transform-origin:top;"></div>
+            <div style="position:absolute;top:0;left:45%;width:1px;height:140%;background:rgba(255,200,80,.5);transform:rotate(15deg);transform-origin:top;"></div>
+            <div style="position:absolute;top:0;left:70%;width:1px;height:140%;background:rgba(255,200,80,.3);transform:rotate(15deg);transform-origin:top;"></div>
+          </div>
+          <div class="proj-cat">Ministry of Tourism</div>
+          <div class="proj-vis-title">KEMEN<br>PAREKRAF</div>
+          <div class="proj-accent" style="background:#FAC850;"></div>
+        </div>
+        <div class="proj-ghost-num">03</div>
+        <div class="proj-veil"></div>
+        <div class="proj-cta">
+          <span class="proj-cta-lbl">View Project</span>
+          <span class="proj-cta-arr">→</span>
+        </div>
+      </div>
+      <div class="proj-meta">
+        <div class="proj-meta-top">
+          <div class="proj-num">03</div>
+          <div class="proj-name">Kemenparekraf</div>
+        </div>
+        <div class="proj-tags">
+          <span class="ptag">Government</span>
+          <span class="ptag">Print</span>
+          <span class="ptag">Social Media</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 04 Mandiri Agen — phone screen mockup -->
+    <div class="proj-card" data-project="mandiri-agen">
+      <div class="proj-vis">
+        <div class="proj-bg" style="background:linear-gradient(155deg,#001428,#002858,#004898);">
+          <!-- Phone outline mockup -->
+          <div class="proj-screen" style="width:88px;height:158px;background:#040f1e;border:2px solid rgba(245,166,35,.35);border-radius:12px;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;">
+            <div style="height:8px;background:rgba(245,166,35,.25);flex-shrink:0;"></div>
+            <div style="flex:1;padding:6px;display:flex;flex-direction:column;gap:4px;">
+              <div style="height:14px;background:rgba(245,166,35,.2);border-radius:2px;"></div>
+              <div style="height:8px;background:rgba(255,255,255,.08);border-radius:2px;width:70%;"></div>
+              <div style="height:8px;background:rgba(255,255,255,.05);border-radius:2px;width:55%;"></div>
+              <div style="height:28px;background:rgba(245,166,35,.12);border-radius:4px;margin-top:4px;"></div>
+              <div style="height:28px;background:rgba(255,255,255,.06);border-radius:4px;"></div>
+              <div style="height:28px;background:rgba(255,255,255,.06);border-radius:4px;"></div>
+            </div>
+          </div>
+          <div style="position:absolute;left:28px;bottom:28px;right:28px;text-align:left;">
+            <div class="proj-cat" style="text-align:left;">Mobile App · Banking UI</div>
+            <div class="proj-vis-title" style="text-align:left;">MANDIRI<br>AGEN</div>
+            <div class="proj-accent" style="background:#F5A623;margin:14px 0 0;"></div>
+          </div>
+        </div>
+        <div class="proj-ghost-num">04</div>
+        <div class="proj-veil"></div>
+        <div class="proj-cta">
+          <span class="proj-cta-lbl">View Project</span>
+          <span class="proj-cta-arr">→</span>
+        </div>
+      </div>
+      <div class="proj-meta">
+        <div class="proj-meta-top">
+          <div class="proj-num">04</div>
+          <div class="proj-name">Mandiri Agen</div>
+        </div>
+        <div class="proj-tags">
+          <span class="ptag">UI/UX</span>
+          <span class="ptag">Mobile App</span>
+          <span class="ptag">Banking</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 05 MBOX — dashboard mockup -->
+    <div class="proj-card" data-project="mandiri-mbox">
+      <div class="proj-vis">
+        <div class="proj-bg" style="background:linear-gradient(155deg,#020810,#081428,#0c2040);">
+          <!-- Dashboard screen mockup -->
+          <div class="proj-screen" style="width:190px;height:110px;background:#060f20;border:1.5px solid rgba(68,136,255,.3);border-radius:6px;padding:8px;display:flex;flex-direction:column;gap:5px;flex-shrink:0;">
+            <div style="display:flex;gap:5px;flex-shrink:0;">
+              <div style="height:5px;background:rgba(68,136,255,.4);border-radius:1px;flex:1;"></div>
+              <div style="height:5px;background:rgba(68,136,255,.2);border-radius:1px;flex:1;"></div>
+              <div style="height:5px;background:rgba(68,136,255,.2);border-radius:1px;flex:1;"></div>
+            </div>
+            <div style="display:flex;gap:5px;flex:1;">
+              <div style="background:rgba(68,136,255,.08);border-radius:3px;flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:4px 3px;">
+                <div style="background:rgba(68,136,255,.5);border-radius:1px;height:40%;"></div>
+              </div>
+              <div style="background:rgba(68,136,255,.08);border-radius:3px;flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:4px 3px;">
+                <div style="background:rgba(68,136,255,.35);border-radius:1px;height:65%;"></div>
+              </div>
+              <div style="background:rgba(68,136,255,.08);border-radius:3px;flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:4px 3px;">
+                <div style="background:rgba(68,136,255,.6);border-radius:1px;height:80%;"></div>
+              </div>
+              <div style="background:rgba(68,136,255,.08);border-radius:3px;flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:4px 3px;">
+                <div style="background:rgba(68,136,255,.45);border-radius:1px;height:55%;"></div>
+              </div>
+            </div>
+          </div>
+          <div style="position:absolute;left:28px;bottom:28px;right:28px;text-align:left;">
+            <div class="proj-cat" style="text-align:left;">Risk Management System</div>
+            <div class="proj-vis-title" style="text-align:left;">MANDIRI<br>MBOX</div>
+            <div class="proj-accent" style="background:#4488ff;margin:14px 0 0;"></div>
+          </div>
+        </div>
+        <div class="proj-ghost-num">05</div>
+        <div class="proj-veil"></div>
+        <div class="proj-cta">
+          <span class="proj-cta-lbl">View Project</span>
+          <span class="proj-cta-arr">→</span>
+        </div>
+      </div>
+      <div class="proj-meta">
+        <div class="proj-meta-top">
+          <div class="proj-num">05</div>
+          <div class="proj-name">Mandiri OBOX (MBOX)</div>
+        </div>
+        <div class="proj-tags">
+          <span class="ptag">UI/UX</span>
+          <span class="ptag">Dashboard</span>
+          <span class="ptag">FinTech</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 06 Intersport Auto -->
+    <div class="proj-card" data-project="intersport-auto">
+      <div class="proj-vis">
+        <div class="proj-bg" style="background:linear-gradient(155deg,#060404,#140808,#280a0a);">
+          <!-- Speed chevron lines -->
+          <div style="position:absolute;inset:0;overflow:hidden;opacity:.15;">
+            <div style="position:absolute;top:0;bottom:0;left:15%;width:60px;background:linear-gradient(90deg,transparent,rgba(204,36,0,.8),transparent);transform:skewX(-20deg);"></div>
+            <div style="position:absolute;top:0;bottom:0;left:40%;width:40px;background:linear-gradient(90deg,transparent,rgba(204,36,0,.5),transparent);transform:skewX(-20deg);"></div>
+            <div style="position:absolute;top:0;bottom:0;left:60%;width:25px;background:linear-gradient(90deg,transparent,rgba(204,36,0,.3),transparent);transform:skewX(-20deg);"></div>
+          </div>
+          <div class="proj-cat">Automotive · Brand</div>
+          <div class="proj-vis-title">INTERSPORT<br>AUTO</div>
+          <div class="proj-accent" style="background:#cc2400;"></div>
+        </div>
+        <div class="proj-ghost-num">06</div>
+        <div class="proj-veil"></div>
+        <div class="proj-cta">
+          <span class="proj-cta-lbl">View Project</span>
+          <span class="proj-cta-arr">→</span>
+        </div>
+      </div>
+      <div class="proj-meta">
+        <div class="proj-meta-top">
+          <div class="proj-num">06</div>
+          <div class="proj-name">Intersport Auto</div>
+        </div>
+        <div class="proj-tags">
+          <span class="ptag">Social Media</span>
+          <span class="ptag">Key Visual</span>
+          <span class="ptag">Automotive</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 07 Merchandise — full width, Figma: 1328×260 (vis 170, meta 90) -->
+    <div class="proj-card wide">
+      <div class="proj-vis">
+        <div class="proj-bg" style="background:linear-gradient(155deg,#100c06,#221808,#301e0a);flex-direction:row;align-items:center;justify-content:flex-start;gap:0;padding:0 80px;text-align:left;">
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div class="proj-cat" style="text-align:left;">ATL Projects</div>
+            <div class="proj-vis-title" style="font-size:3.8rem;">MERCHANDISE</div>
+          </div>
+          <div style="width:1px;height:80px;background:rgba(212,168,58,.2);margin:0 60px;flex-shrink:0;"></div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(212,168,58,.55);line-height:2.4;">
+            Tote Bag &nbsp;·&nbsp; Calendar &nbsp;·&nbsp; Greeting Card &nbsp;·&nbsp; T-Shirt &nbsp;·&nbsp; Notebook &nbsp;·&nbsp; Tumbler
+          </div>
+        </div>
+        <div class="proj-ghost-num" style="font-size:7rem;bottom:-10px;">07</div>
+        <div class="proj-veil"></div>
+        <div class="proj-cta">
+          <span class="proj-cta-lbl">View Project</span>
+          <span class="proj-cta-arr">→</span>
+        </div>
+      </div>
+      <div class="proj-meta">
+        <div class="proj-meta-top">
+          <div class="proj-num">07</div>
+          <div class="proj-name">Merchandise &amp; ATL</div>
+        </div>
+        <div class="proj-tags">
+          <span class="ptag">Print</span>
+          <span class="ptag">Merchandise</span>
+          <span class="ptag">ATL</span>
+          <span class="ptag">Branding</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════ CONTACT ══════ -->
+<section id="contact">
+  <div class="contact-ghost">THANK YOU</div>
+  <div class="contact-eyebrow r">Get In Touch</div>
+  <h2 class="contact-heading r">
+    LET'S<span class="outline">WORK.</span>
+  </h2>
+  <div class="clinks r">
+    <a href="mailto:arvanzorifnazky@gmail.com" class="clink">
+      <span class="clink-lbl">Email</span>
+      <span class="clink-val">arvanzorifnazky@gmail.com</span>
+    </a>
+    <a href="https://instagram.com/vanzorfnzky" class="clink" target="_blank" rel="noopener">
+      <span class="clink-lbl">Instagram</span>
+      <span class="clink-val">@vanzorfnzky</span>
+    </a>
+  </div>
+</section>
+
+<footer>
+  <span class="ft-copy">© 2024 Arvanzo Rifnazky. All rights reserved.</span>
+  <span class="ft-note">Branding · UI/UX · Print · Social Media</span>
+</footer>
+
+<!-- ══════ PRO WARRIORS DETAIL OVERLAY ══════ -->
+<div id="pw-detail" role="dialog" aria-modal="true" aria-label="Pro Warriors Project Detail">
+
+  <nav class="pw-nav">
+    <button class="pw-back" id="pw-close" data-close="pw-detail" aria-label="Back to portfolio">
+      <span class="pw-back-arrow">←</span>
+      BACK TO PORTFOLIO
+    </button>
+    <span class="pw-logo">AZ</span>
+  </nav>
+
+  <div class="pw-body">
+
+    <div class="pw-eyebrow">Selected Work</div>
+    <h1 class="pw-title">Pro Warriors</h1>
+
+    <!-- 3×2 flat image grid matching Figma -->
+    <div class="pw-img-grid">
+      <div class="pw-img-wrap"><img src="img/pw/pw-01-andhara.png" alt="Andhara — Social Post"></div>
+      <div class="pw-img-wrap"><img src="img/pw/pw-02-eliminate-gray.png" alt="Eliminate (Gray)"></div>
+      <div class="pw-img-wrap"><img src="img/pw/pw-03-eliminate-gray2.png" alt="Eliminate Gray v2"></div>
+      <div class="pw-img-wrap"><img src="img/pw/pw-04-general.png" alt="General Content"></div>
+      <div class="pw-img-wrap"><img src="img/pw/pw-05-tonight-show.png" alt="Tonight Show Revisi"></div>
+      <div class="pw-img-wrap"><img src="img/pw/pw-06-giveaway.png" alt="Giveaway Thomas"></div>
+    </div>
+
+    <!-- Banners left / Phone right — matching Figma layout -->
+    <div class="pw-banner-phone">
+      <div class="pw-banners">
+        <div class="pw-banner"><img src="img/pw/pw-banner-orange.png" alt="Final Tim Orange — Full Banner"></div>
+        <div class="pw-banner"><img src="img/pw/pw-banner-pink.png" alt="Final Pink Team — Full Banner"></div>
+      </div>
+      <div class="pw-phone-wrap" style="background:transparent;border-radius:0;aspect-ratio:unset;">
+        <img src="img/pw/pw-phone.png" alt="Instagram Profile Mockup" style="width:100%;height:auto;display:block;">
+      </div>
+    </div>
+
+    <!-- Bio -->
+    <div class="pw-bio" style="max-width:860px;">
+      <p class="pw-bio-text">My first freelance project collaborating with a TV Program. I maintained their Instagram for over a year, mirroring content across platforms and creating original content for a live regular TV Show — working entirely as a remote team. This project sharpened my ability to deliver consistent, on-brand content under weekly broadcast deadlines.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:24px;">
+        <span class="ptag">Social Media</span>
+        <span class="ptag">Branding</span>
+        <span class="ptag">TV Show</span>
+        <span class="ptag">Freelance</span>
+      </div>
+    </div>
+
+    <div class="pw-divider"></div>
+
+    <div class="pw-process-label">Working Process</div>
+    <div class="pw-process-list">
+      <div class="pw-process-item">
+        <h4>Brief &amp; Concept</h4>
+        <p>Weekly content briefs aligned to the TV show's schedule, team roster updates, and match events. Creative direction stayed consistent with the sports-entertainment brand.</p>
+      </div>
+      <div class="pw-process-item">
+        <h4>Design &amp; Production</h4>
+        <p>Created all assets in Photoshop and Illustrator — match highlights, player spotlights, promotional banners, and live show visuals ready for multi-platform posting.</p>
+      </div>
+      <div class="pw-process-item">
+        <h4>Delivery &amp; Publishing</h4>
+        <p>Coordinated remotely with the show's production team to publish content on time across Instagram, Facebook, and YouTube, maintaining consistent brand presence throughout the year.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════ XL BUSINESS SOLUTION DETAIL OVERLAY ══════ -->
+<div id="xl-detail" role="dialog" aria-modal="true" aria-label="XL Business Solution Project Detail">
+
+  <nav class="pw-nav">
+    <button class="pw-back" data-close="xl-detail" aria-label="Back to portfolio">
+      <span class="pw-back-arrow">←</span>
+      BACK TO PORTFOLIO
+    </button>
+    <span class="pw-logo">AZ</span>
+  </nav>
+
+  <div class="pw-body">
+
+    <div class="pw-eyebrow">Selected Work</div>
+    <h1 class="pw-title">XL Business Solution</h1>
+
+    <!-- 3-col 2-row image grid -->
+    <div class="xl-img-grid">
+      <img class="xl-img-tall" src="img/xl/xl-02.png" alt="XL Business Visual 02">
+      <img class="xl-img-tall" src="img/xl/xl-06.png" alt="XL Business Visual 06">
+      <img class="xl-img-std"  src="img/xl/xl-01.png" alt="XL Business Visual 01">
+      <img class="xl-img-std"  src="img/xl/xl-03.png" alt="XL Business Visual 03">
+      <img class="xl-img-tall" src="img/xl/xl-05.png" alt="XL Business Visual 05">
+      <img class="xl-img-tall" src="img/xl/xl-04.png" alt="XL Business Visual 04">
+    </div>
+
+    <!-- Bio row (no phone — use full-width bio) -->
+    <div class="pw-bio" style="max-width:760px;">
+      <p class="pw-bio-text">A comprehensive key visual campaign developed for XL Axiata's Business Solution division through Dentsu Indonesia. The campaign spanned print media, web banners, and digital collateral — requiring tight brand governance across every touchpoint to maintain consistency for one of Indonesia's leading telecommunications enterprises.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:24px;">
+        <span class="ptag">Key Visual</span>
+        <span class="ptag">Print Media</span>
+        <span class="ptag">Web Banner</span>
+        <span class="ptag">Corporate</span>
+      </div>
+    </div>
+
+    <div class="pw-divider"></div>
+
+    <div class="pw-process-label">Working Process</div>
+    <div class="pw-process-list">
+      <div class="pw-process-item">
+        <h4>Campaign Strategy</h4>
+        <p>Collaborated with Dentsu Indonesia's creative team to define visual direction, tone, and messaging hierarchy for the XL Business Solution brand identity refresh.</p>
+      </div>
+      <div class="pw-process-item">
+        <h4>Design Execution</h4>
+        <p>Produced key visuals, print ads, and digital web banners adhering to strict telecom brand standards — balancing corporate professionalism with approachable visual energy.</p>
+      </div>
+      <div class="pw-process-item">
+        <h4>Multi-Format Delivery</h4>
+        <p>Adapted master artworks into various print formats and digital sizes, ensuring pixel-perfect accuracy across all platforms and publication specifications.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════ MANDIRI AGEN DETAIL OVERLAY ══════ -->
+<div id="mandiri-detail" role="dialog" aria-modal="true" aria-label="Mandiri Agen Project Detail">
+
+  <nav class="pw-nav">
+    <button class="pw-back" data-close="mandiri-detail" aria-label="Back to portfolio">
+      <span class="pw-back-arrow">←</span>
+      BACK TO PORTFOLIO
+    </button>
+    <span class="pw-logo">AZ</span>
+  </nav>
+
+  <div class="pw-body">
+
+    <div class="pw-eyebrow">Selected Work</div>
+    <h1 class="pw-title">Mandiri Agen</h1>
+
+    <!-- 3 phone screens side-by-side -->
+    <div class="mandiri-phones">
+      <div class="phone-wrap">
+        <img src="img/mandiri/mandiri-cover.png" alt="Mandiri Agen — Cover Screen">
+      </div>
+      <div class="phone-wrap">
+        <img src="img/mandiri/mandiri-login.png" alt="Mandiri Agen — Login Screen">
+      </div>
+      <div class="phone-wrap dashboard">
+        <img src="img/mandiri/mandiri-dashboard.png" alt="Mandiri Agen — Dashboard Screen">
+      </div>
+    </div>
+
+    <!-- Full-width composite -->
+    <div class="mandiri-composite">
+      <img src="img/mandiri/mandiri-composite.png" alt="Mandiri Agen — Full Composite">
+    </div>
+
+    <!-- Bio -->
+    <div class="pw-bio" style="max-width:760px;">
+      <p class="pw-bio-text">A UI/UX redesign of the Mandiri Agen mobile banking application — streamlining the agent experience for millions of banking access points across Indonesia. The design prioritises clarity, trust, and speed of transaction, with a user flow tailored for field agents operating in low-connectivity environments.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:24px;">
+        <span class="ptag">UI/UX</span>
+        <span class="ptag">Mobile App</span>
+        <span class="ptag">Banking</span>
+        <span class="ptag">Fintech</span>
+      </div>
+    </div>
+
+    <div class="pw-divider"></div>
+
+    <div class="pw-process-label">Working Process</div>
+    <div class="pw-process-list">
+      <div class="pw-process-item">
+        <h4>Research &amp; Flows</h4>
+        <p>Analysed existing agent workflows and pain points to map optimal user journeys — reducing cognitive load for high-volume daily transactions.</p>
+      </div>
+      <div class="pw-process-item">
+        <h4>UI Design</h4>
+        <p>Designed complete screen sets in Figma following Bank Mandiri's design language — typography, color tokens, component library, and interaction states all documented for handoff.</p>
+      </div>
+      <div class="pw-process-item">
+        <h4>Prototype &amp; Review</h4>
+        <p>Built interactive prototypes for usability review with stakeholders, iterating on navigation hierarchy and action confirmation patterns until flows felt intuitive and confident.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════ INTERSPORT AUTO DETAIL OVERLAY ══════ -->
+<div id="intersport-detail" role="dialog" aria-modal="true" aria-label="Intersport Auto Project Detail">
+
+  <nav class="pw-nav">
+    <button class="pw-back" data-close="intersport-detail" aria-label="Back to portfolio">
+      <span class="pw-back-arrow">←</span>
+      BACK TO PORTFOLIO
+    </button>
+    <span class="pw-logo">AZ</span>
+  </nav>
+
+  <div class="pw-body">
+
+    <div class="pw-eyebrow">Selected Work</div>
+    <h1 class="pw-title">Intersport Auto</h1>
+
+    <!-- 3×2 square grid -->
+    <div class="ia-sq-grid">
+      <img src="img/intersport/ia-01.png" alt="Intersport Auto Visual 01">
+      <img src="img/intersport/ia-02.png" alt="Intersport Auto Visual 02">
+      <img src="img/intersport/ia-03.png" alt="Intersport Auto Visual 03">
+      <img src="img/intersport/ia-04.png" alt="Intersport Auto Visual 04">
+      <img src="img/intersport/ia-05.png" alt="Intersport Auto Visual 05">
+      <img src="img/intersport/ia-06.png" alt="Intersport Auto Visual 06">
+    </div>
+
+    <!-- Wide phone/device mockup -->
+    <div class="ia-phone-wrap">
+      <img src="img/intersport/ia-phone.png" alt="Intersport Auto — Device Mockup">
+    </div>
+
+    <!-- Bio -->
+    <div class="pw-bio" style="max-width:760px;">
+      <p class="pw-bio-text">Social media and brand visual identity for Intersport Auto — an automotive dealership brand demanding high-energy, high-contrast creative that reflects speed and performance. Content spanned Instagram feed and story formats, key visuals for promotions, and seasonal campaign material aligned to the automotive sales cycle.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:24px;">
+        <span class="ptag">Social Media</span>
+        <span class="ptag">Key Visual</span>
+        <span class="ptag">Automotive</span>
+        <span class="ptag">Branding</span>
+      </div>
+    </div>
+
+    <div class="pw-divider"></div>
+
+    <div class="pw-process-label">Working Process</div>
+    <div class="pw-process-list">
+      <div class="pw-process-item">
+        <h4>Brand Direction</h4>
+        <p>Established a bold, high-contrast visual language for Intersport Auto — dark backgrounds, aggressive typography, and speed-inspired compositions that communicate performance and prestige.</p>
+      </div>
+      <div class="pw-process-item">
+        <h4>Content Production</h4>
+        <p>Created a consistent library of post templates, promotional banners, and key visuals — all adaptable for seasonal campaigns and vehicle launch announcements.</p>
+      </div>
+      <div class="pw-process-item">
+        <h4>Platform Adaptation</h4>
+        <p>Optimised every visual for Instagram feed ratios, Stories, and digital print — ensuring maximum visual impact whether viewed on-screen or in-dealership.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════ KEMENPAREKRAF DETAIL OVERLAY ══════ -->
+<div id="kemen-detail" role="dialog" aria-modal="true" aria-label="Kemenparekraf Project Detail">
+
+  <nav class="pw-nav">
+    <button class="pw-back" data-close="kemen-detail" aria-label="Back to portfolio">
+      <span class="pw-back-arrow">←</span>
+      BACK TO PORTFOLIO
+    </button>
+    <span class="pw-logo">AZ</span>
+  </nav>
+
+  <div class="pw-body">
+
+    <div class="pw-eyebrow">Selected Work</div>
+    <h1 class="pw-title">Kemenparekraf</h1>
+
+    <!-- 3×2 image grid matching Figma 57:61 -->
+    <div class="km-img-grid">
+      <div class="km-img-wrap"><img src="img/kemen/km-01.png" alt="Kemenparekraf — Hari Anti Narkoba"></div>
+      <div class="km-img-wrap"><img src="img/kemen/km-02.png" alt="Kemenparekraf — Virtual Talkshow"></div>
+      <div class="km-img-wrap"><img src="img/kemen/km-03.png" alt="Kemenparekraf — Sosialisasi Kenormalan Baru"></div>
+      <div class="km-img-wrap"><img src="img/kemen/km-04.png" alt="Kemenparekraf — Protokol Kesehatan"></div>
+      <div class="km-img-wrap"><img src="img/kemen/km-05.png" alt="Kemenparekraf — Microlibrary Warak Kayu"></div>
+      <div class="km-img-wrap"><img src="img/kemen/km-06.png" alt="Kemenparekraf — Kampung Warna-Warni Tigarihit"></div>
+    </div>
+
+    <!-- Bio -->
+    <div class="pw-bio" style="max-width:760px;">
+      <p class="pw-bio-text">Worked within the Bureau of Communications, producing press releases on ministry and ministerial activities for multi-platform distribution. I translated complex government initiatives into clear, public-friendly content while maintaining consistency across official communication channels. In addition, I designed engaging visual materials, including posters for various events and programs, and contributed to national-level campaigns with a broad audience reach in a fast-paced, deadline-driven environment.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:24px;">
+        <span class="ptag">Government</span>
+        <span class="ptag">Print</span>
+        <span class="ptag">Social Media</span>
+        <span class="ptag">Branding</span>
+      </div>
+    </div>
+
+    <div class="pw-divider"></div>
+
+    <div class="pw-process-label">Working Process</div>
+    <div class="pw-process-list">
+      <div class="pw-process-item">
+        <h4>Brand Alignment</h4>
+        <p>Studied and applied the official Kemenparekraf visual identity system — logo usage, approved color palettes, and typography standards — ensuring all materials met government communication requirements.</p>
+      </div>
+      <div class="pw-process-item">
+        <h4>Content Creation</h4>
+        <p>Designed print-ready layouts and social media assets for tourism campaigns, balancing official formality with culturally vibrant, engaging visual storytelling for Indonesian audiences.</p>
+      </div>
+      <div class="pw-process-item">
+        <h4>Multi-Format Output</h4>
+        <p>Delivered print files (brochures, banners, posters) alongside digital assets sized for Instagram, Facebook, and web platforms — all reviewed for compliance before publication.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════ MANDIRI MBOX DETAIL OVERLAY ══════ -->
+<div id="mbox-detail" role="dialog" aria-modal="true" aria-label="Mandiri MBOX Project Detail">
+
+  <nav class="pw-nav">
+    <button class="pw-back" data-close="mbox-detail" aria-label="Back to portfolio">
+      <span class="pw-back-arrow">←</span>
+      BACK TO PORTFOLIO
+    </button>
+    <span class="pw-logo">AZ</span>
+  </nav>
+
+  <div class="pw-body">
+
+    <div class="pw-eyebrow">Selected Work</div>
+    <h1 class="pw-title">Mandiri MBOX</h1>
+
+    <!-- Top row: Welcome + Login — 2 equal columns matching Figma 61:781 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+      <div style="overflow:hidden;background:var(--bg-card);">
+        <img src="img/mbox/mbox-welcome.png" alt="Mandiri MBOX — Welcome Screen" style="width:100%;height:auto;display:block;">
+      </div>
+      <div style="overflow:hidden;background:var(--bg-card);">
+        <img src="img/mbox/mbox-login.png" alt="Mandiri MBOX — Login Screen" style="width:100%;height:auto;display:block;">
+      </div>
+    </div>
+
+    <!-- Bottom: Dashboard at ~50% width, left-aligned matching Figma layout -->
+    <div style="margin-bottom:64px;">
+      <div style="width:50%;overflow:hidden;background:var(--bg-card);">
+        <img src="img/mbox/mbox-dash2.png" alt="Mandiri MBOX — Dashboard Menu" style="width:100%;height:auto;display:block;">
+      </div>
+    </div>
+
+    <!-- Bio -->
+    <div class="pw-bio" style="max-width:760px;">
+      <p class="pw-bio-text">A comprehensive UI/UX design for Mandiri OBOX (MBOX) — Bank Mandiri's internal risk management monitoring system. The platform enables relationship managers and risk officers to track, report, and escalate market and credit risk events across the organisation. The design prioritises data clarity, workflow efficiency, and approval chain transparency within a high-stakes banking context.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:24px;">
+        <span class="ptag">UI/UX</span>
+        <span class="ptag">Dashboard</span>
+        <span class="ptag">FinTech</span>
+        <span class="ptag">Risk Management</span>
+      </div>
+    </div>
+
+    <div class="pw-divider"></div>
+
+    <div class="pw-process-label">Working Process</div>
+    <div class="pw-process-list">
+      <div class="pw-process-item">
+        <h4>Requirements &amp; Audit</h4>
+        <p>Conducted a thorough audit of existing risk reporting workflows with Bank Mandiri stakeholders — mapping data structures, approval hierarchies, and the pain points of manual reporting processes.</p>
+      </div>
+      <div class="pw-process-item">
+        <h4>System Design</h4>
+        <p>Architected a full design system in Figma — data tables, filter panels, status badges, approval action flows — all optimised for dense information display at desktop resolutions.</p>
+      </div>
+      <div class="pw-process-item">
+        <h4>Prototype &amp; Handoff</h4>
+        <p>Delivered interactive prototypes and detailed developer specifications, ensuring pixel-perfect implementation of the risk reporting interface for the Mandiri engineering team.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  /* ── Cursor ── */
+  const cur = document.getElementById('cur');
+  const ring = document.getElementById('cur-ring');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cur.style.left = mx + 'px';
+    cur.style.top  = my + 'px';
+  });
+
+  (function raf() {
+    rx += (mx - rx) * .11;
+    ry += (my - ry) * .11;
+    ring.style.left = rx + 'px';
+    ring.style.top  = ry + 'px';
+    requestAnimationFrame(raf);
+  })();
+
+  document.querySelectorAll('a, button, .proj-card, .skill-tile, [data-project]').forEach(el => {
+    el.addEventListener('mouseenter', () => document.body.classList.add('hover-active'));
+    el.addEventListener('mouseleave', () => document.body.classList.remove('hover-active'));
+  });
+
+  /* ── 3D tilt on project cards ── */
+  document.querySelectorAll('.proj-card').forEach(card => {
+    const vis = card.querySelector('.proj-vis');
+    let raf;
+
+    card.addEventListener('mousemove', e => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const r  = card.getBoundingClientRect();
+        const x  = (e.clientX - r.left) / r.width  - 0.5;   // -0.5 → 0.5
+        const y  = (e.clientY - r.top)  / r.height - 0.5;
+        const tX = x * 10;   // max ±5deg
+        const tY = y * -10;
+        card.style.transform = `perspective(900px) rotateY(${tX}deg) rotateX(${tY}deg) translateY(0) scale(1.015)`;
+        if (vis) vis.style.transform = `scale(1.04) translateZ(0)`;
+      });
+    });
+
+    card.addEventListener('mouseleave', () => {
+      cancelAnimationFrame(raf);
+      card.style.transform = '';
+      if (vis) vis.style.transform = '';
+    });
+  });
+
+  /* ── Project detail overlays ── */
+  const overlayMap = {
+    'pro-warriors':    'pw-detail',
+    'xl-business':     'xl-detail',
+    'kemenparekraf':   'kemen-detail',
+    'mandiri-agen':    'mandiri-detail',
+    'mandiri-mbox':    'mbox-detail',
+    'intersport-auto': 'intersport-detail'
+  };
+
+  function openOverlay(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    el.scrollTop = 0;
+  }
+
+  function closeOverlay(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function closeAllOverlays() {
+    Object.values(overlayMap).forEach(id => closeOverlay(id));
+  }
+
+  // Wire project cards to their overlays
+  document.querySelectorAll('.proj-card[data-project]').forEach(card => {
+    const project = card.dataset.project;
+    const overlayId = overlayMap[project];
+    if (!overlayId) return;
+    card.addEventListener('click', () => openOverlay(overlayId));
+  });
+
+  // Wire all back/close buttons via data-close attribute
+  document.querySelectorAll('[data-close]').forEach(btn => {
+    btn.addEventListener('click', () => closeOverlay(btn.dataset.close));
+  });
+
+  // Close on Escape key
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeAllOverlays();
+  });
+
+  /* ── Nav scroll state ── */
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+
+    /* progress bar */
+    const pct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight) * 100;
+    document.getElementById('progress').style.width = pct + '%';
+  }, { passive: true });
+
+  /* ── Intersection reveal ── */
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('on'); });
+  }, { threshold: .1, rootMargin: '0px 0px -56px 0px' });
+
+  document.querySelectorAll('.r, .tl-item').forEach(el => io.observe(el));
+
+  /* ── Project cards scroll reveal (separate observer — looser threshold) ── */
+  const projIO = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('on'); projIO.unobserve(e.target); } });
+  }, { threshold: .08, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.proj-card').forEach(el => projIO.observe(el));
+</script>
+</body>
+</html>
